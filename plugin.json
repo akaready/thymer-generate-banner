@@ -1,0 +1,18 @@
+{
+	"ver": 1,
+	"name": "Generate Banner",
+	"icon": "brush",
+	"description": "Generate AI banners for any page or collection from OpenRouter image models.",
+	"instructions": "Open Plugin: Generate Banner, paste an OpenRouter API key from https://openrouter.ai/keys (stored in encrypted workspace config, never published), then run Generate Banner from the command palette.",
+	"author": "@akaready",
+	"homepage": "https://akaready.com",
+	"repository": "https://github.com/akaready/thymer-generate-banner",
+	"coffee": "https://buymeacoffee.com/akaready",
+	"version": "1.0.0",
+	"__source_repo": "https://github.com/akaready/thymer-generate-banner",
+	"__source_files": {
+		"branch": "main",
+		"json": "plugin.json",
+		"js": "plugin.js"
+	}
+}
