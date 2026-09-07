@@ -3470,7 +3470,7 @@ ${report}
   // settings.js
   var PLUGIN_SLUG = "generate-banner";
   var PLUGIN_NAME = "Generate Banner";
-  var PLUGIN_VERSION = "1.0.0";
+  var PLUGIN_VERSION = "1.0.1";
   var ROOT_CLASS = "plg-generate-banner";
   var PANEL_TYPE = "generate-banner-settings";
   var OVERLAY_CLASS = "plg-generate-banner-overlay";
@@ -3609,10 +3609,13 @@ ${report}
       apiKey: str(src.apiKey),
       summaryModel: summary || DEFAULT_SUMMARY_MODEL,
       lastModel: last || DEFAULT_IMAGE_MODEL,
-      applyTarget: APPLY_TARGETS.includes(
-        /** @type {any} */
-        apply
-      ) ? apply : "auto",
+      applyTarget: (
+        /** @type {'auto'|'page'|'collection'} */
+        APPLY_TARGETS.includes(
+          /** @type {any} */
+          apply
+        ) ? apply : "auto"
+      ),
       generateCount: GENERATE_COUNTS.includes(
         /** @type {any} */
         count
@@ -6367,7 +6370,10 @@ ${snippet}` : subject;
       const first = errors.find(Boolean);
       throw first instanceof Error ? first : new Error(String(first || "OpenRouter returned no image data."));
     }
-    return ok;
+    return (
+      /** @type {{ file: File, mediaType: string, cost: number | null, b64: string }[]} */
+      ok
+    );
   }
   __name(generateImages, "generateImages");
   function inputReference(dataUrl) {
@@ -6850,7 +6856,10 @@ ${body}` : ""
           "aria-label": ariaLabel
         })
       );
-      const menu = h("div", { class: `${ROOT_CLASS}-menu is-floating`, role: "listbox" });
+      const menu = (
+        /** @type {FloatingMenuEl} */
+        h("div", { class: `${ROOT_CLASS}-menu is-floating`, role: "listbox" })
+      );
       menu._btn = btn;
       floatingMenus.push(menu);
       const wrap = h("div", { class: `${ROOT_CLASS}-pick` }, btn);
@@ -6908,7 +6917,10 @@ ${body}` : ""
         "aria-expanded": "false"
       })
     );
-    const modelMenu = h("div", { class: `${ROOT_CLASS}-menu is-floating ${ROOT_CLASS}-menu-model`, role: "listbox" });
+    const modelMenu = (
+      /** @type {FloatingMenuEl} */
+      h("div", { class: `${ROOT_CLASS}-menu is-floating ${ROOT_CLASS}-menu-model`, role: "listbox" })
+    );
     modelMenu._btn = modelBtn;
     floatingMenus.push(modelMenu);
     const modelWrap = h("div", { class: `${ROOT_CLASS}-model` }, modelBtn);
@@ -7029,7 +7041,8 @@ ${body}` : ""
       bodyEl
     );
     const slotEl = h("div", { class: `${ROOT_CLASS}-slot` }, dialog);
-    overlayEl = h("div", { class: OVERLAY_CLASS }, slotEl, modelMenu, resolutionPick.menu, refFileInput);
+    overlayEl = /** @type {HTMLElement & { _onClose?: (() => void) | null }} */
+    h("div", { class: OVERLAY_CLASS }, slotEl, modelMenu, resolutionPick.menu, refFileInput);
     overlayEl._onClose = () => {
       clearReference(true);
       clearAppliedBanner();
@@ -8915,7 +8928,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
           });
           const buf = blob ? await blob.download() : null;
           if (!buf) return;
-          const type = blob.contentType || "image/png";
+          const type = (
+            /** @type {PluginBlob} */
+            blob.contentType || "image/png"
+          );
           this._styleThumbUrls[id] = URL.createObjectURL(new Blob([buf], { type }));
         } catch {
         }
@@ -8969,7 +8985,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
           });
           const buf = blob ? await blob.download() : null;
           if (!buf) return;
-          const type = blob.contentType || "image/png";
+          const type = (
+            /** @type {PluginBlob} */
+            blob.contentType || "image/png"
+          );
           const file = new File([buf], entry.name || `banner-${entry.guid}.png`, { type });
           const url = URL.createObjectURL(file);
           added.push(this._normalizeGalleryItem({ ...entry, file, url }));
@@ -9246,7 +9265,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
       this._settings = normalizeSettings(this._settingsStore.update(this._settings).settings);
       this._refreshScopePill();
     }
-    /** Memory-only while the generate dialog is open — a flush reloads the plugin. */
+    /**
+     * Memory-only while the generate dialog is open — a flush reloads the plugin.
+     * @param {Record<string, any>} patch
+     */
     _patchSettingsLive(patch) {
       this._settings = normalizeSettings({ ...this._settings, ...patch });
       this._pendingSettings = { ...this._pendingSettings, ...patch };
@@ -10064,7 +10086,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
         });
         const buf = blob ? await blob.download() : null;
         if (!buf) return "";
-        const type = blob.contentType || "image/png";
+        const type = (
+          /** @type {PluginBlob} */
+          blob.contentType || "image/png"
+        );
         return await fileToDataUrl2(new File([buf], "reference.png", { type }));
       } catch {
         return "";
@@ -10586,7 +10611,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
         });
         const buf = blob ? await blob.download() : null;
         if (!buf) return;
-        const type = blob.contentType || "image/png";
+        const type = (
+          /** @type {PluginBlob} */
+          blob.contentType || "image/png"
+        );
         this._autoRefUrls[id] = URL.createObjectURL(new Blob([buf], { type }));
         if (this._panelTab === "auto") this._renderAutoDetailIntoPanel();
       } catch {
@@ -10756,7 +10784,10 @@ A reference image was provided; use it as visual guidance for subject, compositi
         });
         const buf = blob ? await blob.download() : null;
         if (buf) {
-          const type = blob.contentType || "image/png";
+          const type = (
+            /** @type {PluginBlob} */
+            blob.contentType || "image/png"
+          );
           const file = new File([buf], rec.name || "applied-banner.png", { type });
           return { url: URL.createObjectURL(file), file, guid, revoke: true };
         }
